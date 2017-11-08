@@ -1,5 +1,6 @@
 package snowroller.sqliteandroid;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,8 +13,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final int DB_VERSION = 1;
 
-    public DBHelper(Context context)
-    {
+    public DBHelper(Context context) {
         super(context, "MyDataBase", null, DB_VERSION);
     }
 
@@ -30,5 +30,15 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public void addHighScore(String name, int points) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name",name);
+        contentValues.put("points", points);
+        long id = db.insert("Highscores",null,contentValues);
+        db.close();
     }
 }
