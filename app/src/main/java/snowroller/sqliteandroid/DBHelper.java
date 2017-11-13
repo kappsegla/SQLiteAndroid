@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,8 @@ public class DBHelper extends SQLiteOpenHelper {
             highScore.points = c.getInt(2);
 
             highScoreList.add(highScore);
+            Log.d("SQLiteAndroid",highScore.id  + ","
+                    + highScore.name +","+ highScore.points);
         }while(c.moveToNext());  //Move cursor to next row. Returns false if end of data
 
         db.close();

@@ -11,6 +11,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DBHelper dbHelper = new DBHelper(this);
-        dbHelper.addHighScore("Martin",999);
+       // dbHelper.addHighScore("Kalle",10);
+
+        dbHelper.getAllHighScores();
+
     }
 }
