@@ -1,7 +1,9 @@
 package snowroller.sqliteandroid;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,6 +16,14 @@ public class MainActivity extends AppCompatActivity {
        // dbHelper.addHighScore("Kalle",10);
 
         //dbHelper.getAllHighScores();
+        List<HighScore> list = dbHelper.getAllWithName("Kalle");
+        HighScore highScore = list.get(0);
+
+        highScore.points = 777;
+
+        dbHelper.updateHighScore(highScore);
+
+        //For Log.d printing
         dbHelper.getAllWithName("Kalle");
     }
 }
