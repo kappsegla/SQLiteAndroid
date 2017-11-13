@@ -2,6 +2,7 @@ package snowroller.sqliteandroid;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -25,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String sql = "CREATE TABLE Highscores ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT NOT NULL," +
-                "points INTEGMER);";
+                "points INTEGER);";
 
         db.execSQL(sql);
     }
@@ -49,6 +50,22 @@ public class DBHelper extends SQLiteOpenHelper {
         List<HighScore> highScoreList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
             //TODO: get all entries from database and put in highScoreList
+        Cursor c = db.query("Highscores",null,null,null,null,null,null);
+
+        boolean success = c.moveToFirst();
+        if( !success)
+            return highScoreList;  //Returns an empty list. Found nothing in database
+
+        //Loop for every row in the table
+        do {
+            HighScore highScore = new HighScore();
+            highScore.id = c.getLong(0);
+            highScore.name = c.getString(1);
+            highScore.points = c.getInt(2);
+
+            highScoreList.add(highScore);
+        }while(c.moveToNext());  //Move cursor to next row. Returns false if end of data
+
         db.close();
         return  highScoreList;
     }
