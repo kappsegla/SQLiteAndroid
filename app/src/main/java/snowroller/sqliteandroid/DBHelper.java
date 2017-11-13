@@ -3,6 +3,7 @@ package snowroller.sqliteandroid;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -54,21 +55,19 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor c = db.query("Highscores",null,null,null,null,null,null);
 
         boolean success = c.moveToFirst();
-        if( !success)
-            return highScoreList;  //Returns an empty list. Found nothing in database
+        if( success) {
+            //Loop for every row in the table
+            do {
+                HighScore highScore = new HighScore();
+                highScore.id = c.getLong(0);
+                highScore.name = c.getString(1);
+                highScore.points = c.getInt(2);
 
-        //Loop for every row in the table
-        do {
-            HighScore highScore = new HighScore();
-            highScore.id = c.getLong(0);
-            highScore.name = c.getString(1);
-            highScore.points = c.getInt(2);
-
-            highScoreList.add(highScore);
-            Log.d("SQLiteAndroid",highScore.id  + ","
-                    + highScore.name +","+ highScore.points);
-        }while(c.moveToNext());  //Move cursor to next row. Returns false if end of data
-
+                highScoreList.add(highScore);
+                Log.d("SQLiteAndroid", highScore.id + ","
+                        + highScore.name + "," + highScore.points);
+            } while (c.moveToNext());  //Move cursor to next row. Returns false if end of data
+        }
         db.close();
         return  highScoreList;
     }
@@ -90,21 +89,19 @@ public class DBHelper extends SQLiteOpenHelper {
                             null,null,null);
 
         boolean success = c.moveToFirst();
-        if( !success)
-            return highScoreList;  //Returns an empty list. Found nothing in database
+        if( success) {
+            //Loop for every row in the table
+            do {
+                HighScore highScore = new HighScore();
+                highScore.id = c.getLong(0);
+                highScore.name = c.getString(1);
+                highScore.points = c.getInt(2);
 
-        //Loop for every row in the table
-        do {
-            HighScore highScore = new HighScore();
-            highScore.id = c.getLong(0);
-            highScore.name = c.getString(1);
-            highScore.points = c.getInt(2);
-
-            highScoreList.add(highScore);
-            Log.d("SQLiteAndroid",highScore.id  + ","
-                    + highScore.name +","+ highScore.points);
-        }while(c.moveToNext());  //Move cursor to next row. Returns false if end of data
-
+                highScoreList.add(highScore);
+                Log.d("SQLiteAndroid", highScore.id + ","
+                        + highScore.name + "," + highScore.points);
+            } while (c.moveToNext());  //Move cursor to next row. Returns false if end of data
+        }
         db.close();
         return  highScoreList;
     }
@@ -126,6 +123,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.close();
         return  rows == 1;
+    }
+
+    public boolean deleteHighScore(HighScore highScore)
+    {
+        return deleteHighScore(highScore.id);
+    }
+
+    public boolean deleteHighScore(long id)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String [] selectionArgs = new String[]{Long.toString(id)};
+
+        //To remove all rows from table, set whereClause to "1"
+        int result = db.delete("Highscores","id=?", selectionArgs);
+
+        db.close();
+
+        return result == 1;
+    }
+
+    public long getHighScoreCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        long cnt = DatabaseUtils.queryNumEntries(db, "HighScores");
+        db.close();
+        return cnt;
     }
 }
 

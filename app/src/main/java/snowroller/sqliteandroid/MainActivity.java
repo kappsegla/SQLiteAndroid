@@ -13,17 +13,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         DBHelper dbHelper = new DBHelper(this);
-       // dbHelper.addHighScore("Kalle",10);
+        dbHelper.addHighScore("Kalle",10);
 
         //dbHelper.getAllHighScores();
         List<HighScore> list = dbHelper.getAllWithName("Kalle");
         HighScore highScore = list.get(0);
 
-        highScore.points = 777;
+        //highScore.points = 777;
 
-        dbHelper.updateHighScore(highScore);
+        //dbHelper.updateHighScore(highScore);
+
+        dbHelper.deleteHighScore(highScore);
 
         //For Log.d printing
-        dbHelper.getAllWithName("Kalle");
+        dbHelper.getAllHighScores();
+        dbHelper.getHighScoreCount();
     }
 }
