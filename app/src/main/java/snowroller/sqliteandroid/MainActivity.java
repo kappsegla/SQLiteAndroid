@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         list.add("List item1");
         list.add("List item2");
         list.add("List item3");
+        list.add("List item4");  //Just added
 
         //Färdig adapter för ListView
         arrayAdapter = new ArrayAdapter<String>(this,
