@@ -38,14 +38,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void addHighScore(String name, int points) {
-        SQLiteDatabase db = getWritableDatabase();
+    public HighScore addHighScore(String name, int points) {
 
+        HighScore highScore = new HighScore();
+        highScore.name = name;
+        highScore.points = points;
+        return addHighScore(highScore);
+    }
+
+    public HighScore addHighScore(HighScore highScore){
+        SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name",name);
-        contentValues.put("points", points);
-        long id = db.insert("Highscores",null,contentValues);
+        contentValues.put("name",highScore.name);
+        contentValues.put("points", highScore.points);
+        highScore.id = db.insert("Highscores",null,contentValues);
         db.close();
+        return highScore;
     }
 
     public List<HighScore> getAllHighScores() {
