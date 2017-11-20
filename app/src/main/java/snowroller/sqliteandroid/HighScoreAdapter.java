@@ -10,50 +10,77 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by Martin on 2017-11-18.
+ * Created by Martin on 2017-11-20.
  */
 
-public class HighScoreAdapter extends BaseAdapter {
+class HighScoreAdapter extends BaseAdapter {
 
+    private List<HighScore> list;
     private Context context;
-    private List<HighScore> dataSource;
-    private LayoutInflater inflater;
+    private LayoutInflater layoutInflater;
 
-    public HighScoreAdapter(Context context, List<HighScore> items) {
-        this.context= context;
-        this.dataSource = items;
-        inflater = (LayoutInflater)context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
+    public HighScoreAdapter(Context context, List<HighScore> list) {
+        this.list = list;
+        this.context = context;
+        layoutInflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void remove(HighScore highScore)
+    {
+        list.remove(highScore);
+        notifyDataSetChanged();
+    }
+
+    public void add(HighScore highScore)
+    {
+        list.add(highScore);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return dataSource.size();
+        return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return dataSource.get(position);
+        return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return dataSource.get(position).id;
+        return list.get(position).id;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = null;
-        if(convertView == null) {
-            v = inflater.inflate(R.layout.highscorelistview, parent, false);
+
+        View view = null;
+        if( convertView == null)
+        {
+            view = layoutInflater.inflate(R.layout.highscorelistview,
+                    parent,false);
         }
         else
-            v = convertView;
+        {
+            view = convertView;
+        }
 
-        TextView t1 = v.findViewById(R.id.textView);
-        TextView t2 = v.findViewById(R.id.textView2);
-        t1.setText(dataSource.get(position).name);
-        t2.setText("" + dataSource.get(position).points);
-        return v;
+        TextView textView = view.findViewById(R.id.textView);
+        textView.setText( list.get(position).name );
+        TextView textView2 = view.findViewById(R.id.textView2);
+        textView2.setText( Integer.toString( list.get(position).points ) );
+
+        return view;
     }
 }
+
+
+
+
+
+
+
+
+

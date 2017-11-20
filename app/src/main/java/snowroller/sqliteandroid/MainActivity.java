@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         list = dbHelper.getAllHighScores();
 
         //Custom adapter för ListView
-        adapter = new HighScoreAdapter(this,list);
+        adapter = new HighScoreAdapter(this, list);
 
         //Connect listView to arrayAdapter
         listView.setAdapter(adapter);
@@ -36,15 +36,13 @@ public class MainActivity extends AppCompatActivity {
                 {
                     HighScore highScore = (HighScore)adapter.getItem(position);
                     dbHelper.deleteHighScore(highScore);
-                    list.remove(highScore);
-                    adapter.notifyDataSetChanged();
+                    adapter.remove(highScore);
                 }
         );
 
         floatingActionButton.setOnClickListener((view)->{
            HighScore highScore = dbHelper.addHighScore("Test", 100);
-           list.add(highScore);
-           adapter.notifyDataSetChanged();
+           adapter.add(highScore);
         });
     }
 }
