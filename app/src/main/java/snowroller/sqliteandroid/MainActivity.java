@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -39,8 +40,12 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id)->
                 {
-                    dbHelper.deleteHighScore(id);
-                    cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
+                   // dbHelper.deleteHighScore(id);
+                   // cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
+                    ImageView imageView = view.findViewById(R.id.imageView);
+
+                   DownloadImageTask task = new DownloadImageTask(imageView);
+                   task.execute("https://findicons.com/files/icons/385/game_stars/256/mario.png");
                 }
         );
 
