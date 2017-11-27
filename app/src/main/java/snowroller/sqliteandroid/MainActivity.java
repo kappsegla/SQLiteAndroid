@@ -1,5 +1,6 @@
 package snowroller.sqliteandroid;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
 
     DBHelper dbHelper = new DBHelper(this);
+    private HighScoreCursorAdapter cursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +25,34 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         floatingActionButton = findViewById(R.id.floatingActionButton);
 
+        //setupListAdapter();
+        setupCursorAdapter();
+    }
+
+    private void setupCursorAdapter() {
+        //Data källa för vår listview
+        Cursor c = dbHelper.getAllHighScoresCursor();
+
+        cursorAdapter = new HighScoreCursorAdapter(this, c);
+
+        listView.setAdapter(cursorAdapter);
+
+        listView.setOnItemClickListener((parent, view, position, id)->
+                {
+                    dbHelper.deleteHighScore(id);
+                    cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
+                }
+        );
+
+        floatingActionButton.setOnClickListener((view)->{
+            HighScore highScore = dbHelper.addHighScore("Test", 100);
+            cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
+        });
+
+    }
+
+    private void setupListAdapter()
+    {
         //Data källa för vår listview
         list = dbHelper.getAllHighScores();
 
@@ -41,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
         );
 
         floatingActionButton.setOnClickListener((view)->{
-           HighScore highScore = dbHelper.addHighScore("Test", 100);
-           adapter.add(highScore);
+            HighScore highScore = dbHelper.addHighScore("Test", 100);
+            adapter.add(highScore);
         });
     }
 }

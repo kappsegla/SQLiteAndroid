@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 2;
 
     public DBHelper(Context context) {
         super(context, "MyDataBase", null, DB_VERSION);
@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String sql = "CREATE TABLE Highscores ( id INTEGER PRIMARY KEY AUTOINCREMENT," +
+        String sql = "CREATE TABLE Highscores ( _id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "name TEXT NOT NULL," +
                 "points INTEGER);";
 
@@ -35,7 +35,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if( oldVersion == 1 && newVersion == 2) {
+            String sql = "ALTER TABLE Highscores RENAME TO Highscores_orig;";
+            db.execSQL(sql);
 
+            onCreate(db);
+
+            sql = "INSERT INTO Highscores(name, points) SELECT name, points FROM Highscores_orig;";
+            db.execSQL(sql);
+
+            sql = "DROP TABLE Highscores_orig;";
+            db.execSQL(sql);
+        }
     }
 
     public HighScore addHighScore(String name, int points) {
@@ -52,7 +63,6 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("name",highScore.name);
         contentValues.put("points", highScore.points);
         highScore.id = db.insert("Highscores",null,contentValues);
-        db.close();
         return highScore;
     }
 
@@ -76,7 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         + highScore.name + "," + highScore.points);
             } while (c.moveToNext());  //Move cursor to next row. Returns false if end of data
         }
-        db.close();
+        c.close();
         return  highScoreList;
     }
 
@@ -110,7 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         + highScore.name + "," + highScore.points);
             } while (c.moveToNext());  //Move cursor to next row. Returns false if end of data
         }
-        db.close();
+        c.close();
         return  highScoreList;
     }
 
@@ -123,13 +133,12 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put("name", highScore.name);
         cv.put("points", highScore.points);
 
-        String selection = "id=?";
+        String selection = "_id=?";
 
         String[] selectionArgs = new String[]{Long.toString(highScore.id)};
 
         int rows = db.update("Highscores",cv, selection, selectionArgs);
 
-        db.close();
         return  rows == 1;
     }
 
@@ -145,9 +154,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String [] selectionArgs = new String[]{Long.toString(id)};
 
         //To remove all rows from table, set whereClause to "1"
-        int result = db.delete("Highscores","id=?", selectionArgs);
-
-        db.close();
+        int result = db.delete("Highscores","_id=?", selectionArgs);
 
         return result == 1;
     }
@@ -155,8 +162,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public long getHighScoreCount() {
         SQLiteDatabase db = this.getReadableDatabase();
         long cnt = DatabaseUtils.queryNumEntries(db, "HighScores");
-        db.close();
         return cnt;
+    }
+
+    public Cursor getAllHighScoresCursor() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        return db.query("Highscores",null,null,null,null,null,null);
     }
 }
 
