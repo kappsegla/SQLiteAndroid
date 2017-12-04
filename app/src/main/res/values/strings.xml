@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SQLiteAndroid</string>
+    <string name="small_commit">This is a very small commit!</string>
 </resources>
