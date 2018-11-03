@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -38,26 +37,21 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(cursorAdapter);
 
-        listView.setOnItemClickListener((parent, view, position, id)->
+        listView.setOnItemClickListener((parent, view, position, id) ->
                 {
-                   // dbHelper.deleteHighScore(id);
-                   // cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
-                    ImageView imageView = view.findViewById(R.id.imageView);
-
-                   DownloadImageTask task = new DownloadImageTask(imageView);
-                   task.execute("https://findicons.com/files/icons/385/game_stars/256/mario.png");
+                    dbHelper.deleteHighScore(id);
+                    cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
                 }
         );
 
-        floatingActionButton.setOnClickListener((view)->{
+        floatingActionButton.setOnClickListener((view) -> {
             HighScore highScore = dbHelper.addHighScore("Test", 100);
             cursorAdapter.changeCursor(dbHelper.getAllHighScoresCursor());
         });
 
     }
 
-    private void setupListAdapter()
-    {
+    private void setupListAdapter() {
         //Data källa för vår listview
         list = dbHelper.getAllHighScores();
 
@@ -67,15 +61,15 @@ public class MainActivity extends AppCompatActivity {
         //Connect listView to arrayAdapter
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener((parent, view, position, id)->
+        listView.setOnItemClickListener((parent, view, position, id) ->
                 {
-                    HighScore highScore = (HighScore)adapter.getItem(position);
+                    HighScore highScore = (HighScore) adapter.getItem(position);
                     dbHelper.deleteHighScore(highScore);
                     adapter.remove(highScore);
                 }
         );
 
-        floatingActionButton.setOnClickListener((view)->{
+        floatingActionButton.setOnClickListener((view) -> {
             HighScore highScore = dbHelper.addHighScore("Test", 100);
             adapter.add(highScore);
         });
